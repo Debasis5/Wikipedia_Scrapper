@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+     {% for posts in posts%}
+        <article class="media content-section">
+          <div class="media-body">
+            <p class="article-content">{{ posts.images }}</p>
+          </div>
+        </article>
+     {% endfor %}
+{% endblock content %}
