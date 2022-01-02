@@ -75,9 +75,10 @@ class wikiScrapper:
             references = self.WikiReference()
             images = self.WikiImages()
             #https://stackoverflow.com/questions/47668507/how-to-store-images-in-mongodb-through-pymongo/47669016
-            images1= {}
-
             result = {'summary': summary, 'reference': references, 'images': images}
+            mongoClient.insertImages(db_name="Wikipedia-Scrapper_Images",
+                                     collection_name=search + "_images",
+                                     images=images)
             mongoClient.insertRecord(db_name="Wikipedia-Scrapper",
                                      collection_name= search,
                                      record=result)

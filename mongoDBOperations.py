@@ -1,6 +1,8 @@
 import pymongo
 import pandas as pd
 import json
+import gridfs
+from urllib.request import urlopen
 
 
 class MongoDBManagement:
@@ -205,6 +207,42 @@ class MongoDBManagement:
             return f"rows inserted "
         except Exception as e:
             raise Exception(f"(insertRecords): Something went wrong on inserting record\n" + str(e))
+
+    def insertImages(self, db_name, collection_name, images):
+        """
+        This inserts images.
+        :param db_name:
+        :param collection_name:
+        :param images:
+        :return:
+        """
+
+        try:
+            # collection_check_status = self.isCollectionPresent(collection_name=collection_name,db_name=db_name)
+            # print(collection_check_status)
+            # if collection_check_status:
+            database = self.getDatabase(db_name=db_name)
+            gfs = gridfs.GridFS(database, collection= collection_name)
+            n = 0
+            for ii in images:
+                print("processing", ii)
+                f = urlopen(ii)
+                # put() "inserts" the file-like object into the gfs subsystem
+                # and returns an ID.
+                file_id = gfs.put(f)
+
+                # Make up a name and capture it AND the gridfs ID in a
+                # regular collection, called imageMeta here but it is
+                # any name you like.  It is not strictly necessary to do this
+                # and it is completely separate from gridFS but you will almost
+                # always have a need to capture some metadata around the pix.
+                name = "IMAGE_" + str(n)
+                database.imageMeta.insert_one({"name": name, "fileId": file_id})
+                n += 1
+
+            return f"Images inserted "
+        except Exception as e:
+            raise Exception(f"(insertImage): Something went wrong on inserting images\n" + str(e))
 
     def findfirstRecord(self, db_name, collection_name,query=None):
         """
