@@ -1,10 +1,10 @@
 import pandas as pd
 import wikipedia
-
 from mongoDBOperations import MongoDBManagement
 
 from PIL import Image
 import io
+
 
 
 class wikiScrapper:
